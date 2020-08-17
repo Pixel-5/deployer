@@ -12,7 +12,7 @@ intro
 
 
 inform_human 'UPDATING SERVER (sudo apt-get update)'
-sudo apt-get update
+#sudo apt-get update
 
 
 inform_human 'INSTALLING NGINX'
@@ -37,21 +37,28 @@ sudo mysql_secure_installation
 
 
 inform_human 'INSTALLING php-7.2 && most commonly used modules'
-sudo apt-add-repository -y ppa:ondrej/php
+
+sudo apt-get  update
+sudo apt -y install software-properties-common
+sudo add-apt-repository ppa:ondrej/php
 sudo apt-get update
-sudo apt-get -y --allow-unauthenticated install php7.2 php7.2-cli php7.2-common php7.2-json php7.2-opcache php7.2-mysql php7.2-mbstring  php7.2-zip php7.2-fpm php7.2-xml  zip unzip
-#php7.2-mcrypt <-- deprecated ??
-sudo apt-get -y --allow-unauthenticated install php7.1-mcrypt
+sudo apt-get install php7.4
+sudo apt-get install php7.4-mysql
+sudo apt install php7.4-fpm php7.4-common php7.4-mbstring php7.4-xmlrpc php7.4-gd php7.4-xml php7.4-mysql php7.4-cli php7.4-zip php7.4-curl
+sudo a2dismod php7.0
+sudo a2enmod php7.4
+sudo service apache2 restart
+
 
 
 
 inform_human 'UPDATING php.ini (cgi.fix_pathinfo=0)' #
-sudo rm /etc/php/7.2/fpm/php.ini
-cp files/php.ini /etc/php/7.2/fpm/php.ini
+sudo rm /etc/php/7.4/fpm/php.ini
+cp files/php.ini /etc/php/7.4/fpm/php.ini
 
 
 inform_human 'RESTARTING php7.2-fpm'
-sudo systemctl restart php7.2-fpm
+sudo systemctl restart php7.4-fpm
 
 
 #if i can't find sudo nano /etc/nginx/sites-available/default -->re install nginx
