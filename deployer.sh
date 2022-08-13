@@ -36,7 +36,7 @@ echo_purple '-------------------------'
 sudo mysql_secure_installation
 
 
-inform_human 'INSTALLING php-7.2 && most commonly used modules'
+inform_human 'INSTALLING php-7.4 && most commonly used modules'
 
 sudo apt-get  update
 sudo apt -y install software-properties-common
@@ -45,17 +45,19 @@ sudo apt-get update
 sudo apt-get install php7.4
 sudo apt-get install php7.4-mysql
 sudo apt install php7.4-fpm php7.4-common php7.4-mbstring php7.4-xmlrpc php7.4-gd php7.4-xml php7.4-mysql php7.4-cli php7.4-zip php7.4-curl
-sudo a2dismod php7.0
+sudo a2dismod php7.4
 sudo a2enmod php7.4
-sudo service apache2 restart
+sudo service apache2 stop
 
 
 
 
 inform_human 'UPDATING php.ini (cgi.fix_pathinfo=0)' #
 sudo rm /etc/php/7.4/fpm/php.ini
-cp files/php.ini /etc/php/7.4/fpm/php.ini
+sudo cp files/php.ini /etc/php/7.4/fpm/php.ini
 
+inform_human 'Installing php mysql extension'
+sudo apt-get install php7.4-mysql
 
 inform_human 'RESTARTING php7.2-fpm'
 sudo systemctl restart php7.4-fpm
@@ -145,15 +147,18 @@ while true; do
       warn_human "*******************************************************"
       warn_human "** if your composer.josn has errors, this will fail ***"
       warn_human "*******************************************************"
-      composer install --no-dev
+      sudo composer install --no-dev
+      sudo compose update
 
 
       inform_human 'CREATING ..env file'
-      cp /var/www/laravel/.env.example /var/www/laravel/.env
+      sudo cp /var/www/laravel/.env.example /var/www/laravel/.env
 
 
       inform_human 'GENERATING APP KEY'
-      php artisan key:generate
+      sudo php artisan key:generate
+      sudo php artisan jwt:secret
+      sudo php artisan migrate --seed
 
 
       inform_human 'GIVING NGINX PERMISSION OVER LARAVEL DIRECTORY'
